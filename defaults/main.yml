@@ -8,6 +8,7 @@ slurm_group: slurm
 slurm_nodes: []
 slurm_partitions: []
 slurm_cgroup: {}
+slurm_limits: []
 
 slurm_config:
   AuthType: auth/munge

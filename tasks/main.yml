@@ -5,6 +5,28 @@
     name: "{{ slurm_ohpc_version }}"
   tags: slurm
 
+- name: increase resource limits
+  pam_limits:
+    domain: "{{ item.domain }}"
+    limit_type: "{{ item.limit_type }}"
+    limit_item: "{{ item.limit_item }}"
+    value: "{{ item.value }}"
+  loop: "{{ slurm_limits }}"
+  tags: slurm
+
+- name: copy sysctl configuration
+  copy:
+    src: slurmctld/sysctl.conf
+    dest: /etc/sysctl.d/98-macc.conf
+    mode: 0644
+  register: result
+  tags: slurm
+
+- name: reload sysctl configuration
+  command: /usr/sbin/sysctl -p
+  when: result.changed
+  tags: slurm
+
 - name: install packages
   yum:
     name: "{{ packages }}"
